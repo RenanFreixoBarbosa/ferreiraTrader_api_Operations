@@ -1,0 +1,28 @@
+# Use uma imagem base com Python
+FROM python:3.10
+
+# Define variáveis de build para o UID e GID
+ARG USER_ID=1001
+ARG GROUP_ID=1001
+
+RUN groupadd -g ${GROUP_ID} mygroup && \
+    useradd -m -u ${USER_ID} -g ${GROUP_ID} myuser
+
+# Define o diretório de trabalho dentro do contêiner
+WORKDIR /usr/local/trader/api
+
+# Copia o arquivo requirements.txt para o contêiner
+COPY requirements.txt /usr/local/trader/api/
+
+# Instala as dependências
+RUN pip install -U pip
+RUN pip install -r requirements.txt
+
+# Copia o conteúdo do seu projeto para o diretório de trabalho no contêiner
+COPY . /usr/local/trader/api/
+
+# Expõe a porta em que o Django irá rodar
+EXPOSE 8000
+
+# Comando para rodar o servidor Django
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
