@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./trader_api
+      args:
+        USER_ID: 1001  # Define o UID fixo
+        GROUP_ID: 1001  # Define o GID fixo
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./trader_api:/usr/local/trader/api
+    ports:
+      - "8000:8000"  # Ajuste aqui para mapear a porta 8000
+    environment:
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_NAME=trader_db
+      - DJANGO_DB_USER=admin
+      - DJANGO_DB_PASSWORD=admin
+    networks:
+      - trader_network
+
+volumes:
+  postgres_data:
+
+networks:
+  trader_network:

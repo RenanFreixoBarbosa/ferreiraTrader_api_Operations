@@ -13,7 +13,4 @@ venv/
 ENV/
 env/
 
-# Docker
-*.swp
-docker-compose*.yml
 
