@@ -4,4 +4,4 @@ from .models import Operation
 class OperationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Operation
-        fields = ['id', 'user', 'amount', 'date', 'result','payout','final_result']
+        fields = ['id', 'user', 'amount', 'date', 'result','payout']

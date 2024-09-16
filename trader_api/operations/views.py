@@ -16,6 +16,7 @@ class ListAllOperations(APIView):
     
 class OperationCreate(APIView):
     def post(self, request):
+        print(request.data)
         serializer = OperationSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()

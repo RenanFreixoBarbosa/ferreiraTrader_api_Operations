@@ -27,7 +27,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Adiciona o nome do usuário ao payload do token
         token['name'] = user.username
-        print(token['name'])
 
         return token
     
