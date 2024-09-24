@@ -45,6 +45,7 @@ OTHERS_APPS = [
 MY_APPS=[
     'users',
     'operations',
+    'daily_result',
 ]
 
 INSTALLED_APPS= OTHERS_APPS + MY_APPS
