@@ -8,8 +8,8 @@ from .serializers import DailyResultSerializer
 
 
 class CreateDailyResultView(APIView):
+    permission_classes=[IsAuthenticated]
     def post(self, request) -> Response:
-        print(request.data)
         serializer = DailyResultSerializer(data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
