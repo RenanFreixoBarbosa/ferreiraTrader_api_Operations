@@ -38,7 +38,7 @@ class Operation(models.Model):
     def calc_operations_graphs(cls, daily_result_id):
         operations = cls.objects.filter(daily_result_id=daily_result_id)
         
-        qtd_wins, qtd_lost, arrecadado = 0, 0, 0
+        qtd_wins, qtd_lost,qtd_draw,arrecadado = 0, 0, 0,0
         
         qtd_op = operations.count()  # Melhor usar count() do que len() em um QuerySet
         for operation in operations:
@@ -47,6 +47,8 @@ class Operation(models.Model):
                 arrecadado += operation.amount
             elif operation.result == "lost":  # Use `elif` para melhorar a eficiência
                 qtd_lost += 1
+            else:
+                qtd_draw +=1
         
         # Verificação para evitar divisão por zero
         percent_arrecadado = (round((qtd_wins / qtd_op) * 100, 2) if qtd_op > 0 else 0)
@@ -55,6 +57,12 @@ class Operation(models.Model):
             'total_operations': qtd_op,
             'total_wins': qtd_wins,
             'total_lost': qtd_lost,
+            "total_draw" : qtd_draw,
             'total_arrecadado': arrecadado,
             'percent_arrecadado': percent_arrecadado
         }
+    
+    @classmethod
+    def get_operations_by_daily_result(cls,daily_result_id):
+        operations = cls.objects.filter(daily_result_id=daily_result_id)
+        return operations
