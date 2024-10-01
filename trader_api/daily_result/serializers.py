@@ -7,7 +7,7 @@ class DailyResultSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = DailyResult
-        fields = ['id', 'date', 'daily_result', 'operations']  # Inclua os campos corretos
+        fields = ['id', 'date', 'daily_result', 'operations']
     
     def create(self, validated_data):
         operations_data = validated_data.pop('operations', [])
