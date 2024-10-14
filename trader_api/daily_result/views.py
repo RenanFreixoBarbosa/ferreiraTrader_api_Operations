@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,DjangoModelPermissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status  # Importa para utilizar códigos de status HTTP
@@ -8,11 +8,13 @@ from .models import DailyResult
 from django.utils.dateparse import parse_date
 from operations.models import Operation
 from operations.serializers import OperationSerializer
+from error_handling.custom_exception import custom_exception_handler
 # Create your views here.
 
 
 class CreateDailyResultView(APIView):
-    permission_classes=[IsAuthenticated]
+    permission_classes = [IsAuthenticated,DjangoModelPermissions]
+    queryset = DailyResult.objects.none()
     def post(self, request) -> Response:
         serializer = DailyResultSerializer(data=request.data,context={'request': request})
         if serializer.is_valid():
@@ -21,6 +23,10 @@ class CreateDailyResultView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DailyResultGraphs(APIView):
+    
+    permission_classes = [IsAuthenticated,DjangoModelPermissions]
+    queryset = DailyResult.objects.none()
+
     def get(self,request,start_date,end_date=None):
         # Converte as strings para objetos de data
         start_date = parse_date(start_date)
