@@ -7,7 +7,7 @@ class DailyResultSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = DailyResult
-        fields = ['id', 'date', 'daily_result', 'operations']
+        fields = ['id', 'date', 'value', 'operations']
     
     def create(self, validated_data):
         operations_data = validated_data.pop('operations', [])
@@ -19,7 +19,7 @@ class DailyResultSerializer(serializers.ModelSerializer):
         for op_data in operations_data:
             op_data['user'] = user.id
             op_data['daily_result_id'] = daily_result.id
-            operation_serializer = OperationSerializer(data={**op_data, 'daily_result': daily_result}, context=self.context)
+            operation_serializer = OperationSerializer(data={**op_data, 'daily_result_id': daily_result}, context=self.context)
             if operation_serializer.is_valid():
                 operation_serializer.save()
             else:

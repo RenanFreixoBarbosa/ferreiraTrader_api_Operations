@@ -10,27 +10,27 @@ class Operation(models.Model):
         ('draw', 'Draw'),
     ]
 
+    name =  models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    payout = models.DecimalField(max_digits=10, decimal_places=2)
+    profit = models.DecimalField(max_digits=10, decimal_places=2)
+    result = models.CharField(max_length=10, choices=RESULT_CHOICES)
     daily_result_id = models.ForeignKey('daily_result.DailyResult', on_delete=models.CASCADE) 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
-    result = models.CharField(max_length=10, choices=RESULT_CHOICES)
-    payout = models.DecimalField(max_digits=10, decimal_places=2)
-    name =  models.CharField(max_length=100)
-    profit_operation = models.DecimalField(max_digits=10, decimal_places=2)
 
     @classmethod
     def created_operations_by_daily_result(cls,daily_result,operations_list):
         for operation in operations_list:
             cls.objects.create(
-                daily_result=daily_result,
-                user=operation.get('user'),
-                amount=operation.get('amount'),
-                date=operation.get('date'),
-                result=operation.get('result'),
-                payout=operation.get('payout'),
                 name=operation.get('name'),
-                profit_operation=operation.get('profit_operation')
+                price=operation.get('price'),
+                profit=operation.get('profit'),
+                result=operation.get('result'),
+                daily_result_id=daily_result,
+                user=operation.get('user'),
+                date=operation.get('date'),
+                payout=operation.get('payout'),
             )
         return "All operation as created"
     
@@ -44,7 +44,7 @@ class Operation(models.Model):
         for operation in operations:
             if operation.result == "win":
                 qtd_wins += 1
-                arrecadado += operation.amount
+                arrecadado += operation.price
             elif operation.result == "lost":  # Use `elif` para melhorar a eficiência
                 qtd_lost += 1
             else:

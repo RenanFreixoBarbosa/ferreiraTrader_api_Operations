@@ -4,7 +4,7 @@ from .models import Operation
 class OperationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Operation
-        fields = ['amount', 'date', 'result', 'payout', 'name', 'profit_operation', 'daily_result_id','user']
+        fields = ['price', 'date', 'result', 'payout', 'name', 'profit', 'daily_result_id','user']
     def create(self, validated_data):
         daily_result = validated_data['daily_result_id']
         validated_data['daily_result_id'] = daily_result
