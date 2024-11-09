@@ -21,4 +21,5 @@ urlpatterns = [
     path("api/",include("users.urls")),
     path('api/', include('operations.urls')),
     path('api/', include('daily_result.urls')),
+    path('api/', include('token_pass.urls')),
 ]

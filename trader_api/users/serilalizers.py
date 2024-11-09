@@ -8,7 +8,7 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'type')
+        fields = ('id', 'username', 'password','email', 'type')
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -17,11 +17,9 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
-            type=validated_data.get('type', 'viewer')
+            type=validated_data.get('type', 'viewer'),
+            email=validated_data['email']
         )
-
-        group = Group.objects.get(id=1)
-        user.groups.add(group)
         return user
     
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

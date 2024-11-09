@@ -46,6 +46,7 @@ MY_APPS=[
     'users',
     'operations',
     'daily_result',
+    'token_pass',
 ]
 
 INSTALLED_APPS= OTHERS_APPS + MY_APPS
@@ -167,3 +168,11 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'users.User'
+
+# Configuração do servidor SMTP (exemplo com Gmail)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Servidor SMTP do Gmail
+EMAIL_PORT = 587  # Porta SMTP
+EMAIL_USE_TLS = True  # Usar TLS para segurança
+EMAIL_HOST_USER = 'renanbarbosa012@gmail.com'  # Seu endereço de e-mail
+EMAIL_HOST_PASSWORD = 'npan lwva jbpn vhha '  # Sua senha de e-mail ou senha de app
