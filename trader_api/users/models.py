@@ -4,8 +4,7 @@ from django.db import models
 class User(AbstractUser):
     USER_TYPES = (
         ('admin', 'Admin'),
-        ('trader', 'Trader'),
-        ('viewer', 'Viewer'),
-        ('comum','comum')
+        ('student', 'Student'),
+        ('team','Team')
     )
-    type = models.CharField(max_length=10, choices=USER_TYPES, default='comum')
+    type = models.CharField(max_length=10, choices=USER_TYPES, default='student')

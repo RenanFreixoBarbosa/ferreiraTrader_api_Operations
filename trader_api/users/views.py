@@ -9,9 +9,9 @@ from .auth_group import UserGroup
 class UserCreateView(APIView):
     permission_classes = []
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            UserGroup.insert_user_in_group(user.username)
-            return Response({'id': user.id, 'username': user.username, 'type': user.type}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user_data = request.data
+        try:
+            user = UserGroup.create_user_and_add_to_group(user_data['username'],user_data['password'],user['email'],user_data["type"])
+        except BaseException as e :
+            return Response({'message':e})
+        return Response({'id': user.id, 'username': user.username, 'type': user.type}, status=status.HTTP_201_CREATED)
