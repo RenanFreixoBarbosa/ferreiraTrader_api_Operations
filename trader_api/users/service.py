@@ -9,7 +9,7 @@ class UserService():
         if serializer.is_valid():
             user = serializer.save()
             self.insert_user_auth_group(user)
-            return {"id":user.id,"username":user.username,"type":user.type,"email":user.email}
+            return {"id":user.id,"username":user.username,"type":user.type,"email":user.email,'name':user.first_name}
         
         # Se o serializer não for válido, retorna os erros
         return {"error": serializer.errors}
