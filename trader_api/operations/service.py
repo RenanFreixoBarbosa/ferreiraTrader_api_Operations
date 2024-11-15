@@ -11,9 +11,10 @@ class OperationService(PostgresServices):
         for operation in operation_list:
             if operation['result'] == "win":
                 qtd_wins += 1
-                arrecadado += float(operation['price'])
+                arrecadado += float(operation['profit'])
             elif operation['result'] == "lost":  # Use `elif` para melhorar a eficiência
                 qtd_lost += 1
+                arrecadado -= float(operation['profit'])
             else:
                 qtd_draw +=1
         
