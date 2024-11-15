@@ -1,6 +1,7 @@
 from .models import User
 from .serilalizers import UserSerializer
 from django.contrib.auth.models import Group
+from .serilalizers import UserSerializer
 
 class UserService():
     
@@ -28,6 +29,8 @@ class UserService():
             return {"message": f"Usuário {user.username} inserido no grupo {user.type}."}
         except Group.DoesNotExist:
             return {"error": f"Grupo '{user.type}' não encontrado."}
-
-
         
+    def get_users(self):
+        users = User.objects.all()
+        serialized_users = UserSerializer(users, many=True)
+        return serialized_users.data

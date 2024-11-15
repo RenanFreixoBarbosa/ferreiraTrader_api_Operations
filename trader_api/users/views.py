@@ -5,6 +5,7 @@ from rest_framework.request import Request  # Importa para o tipo do request
 from .service import UserService
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from core.permissions import IsAdminOrEditorPermission
 
 from .models import User
 
@@ -14,6 +15,13 @@ class UserCreateView(APIView):
         user_service = UserService()
         user = user_service.insert_user(user_data)
         return Response(user)
+
+class GetUserView(APIView):
+    permission_classes = [IsAdminOrEditorPermission]
+
+    def get(self,request):
+        users = UserService().get_users()
+        return Response(users)
     
 class SuportLogin(APIView):
 
