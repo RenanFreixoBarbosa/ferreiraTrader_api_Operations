@@ -22,7 +22,16 @@ class UserSerializer(serializers.ModelSerializer):
             first_name=validated_data['username']
         )
         return user
-    
+
+    def validate(self, attrs):
+        unexpected_fields = set(self.initial_data.keys()) - set(self.fields)
+        if unexpected_fields:
+            raise serializers.ValidationError(
+                {"detail": f"Campos inválidos fornecidos: {', '.join(unexpected_fields)}"}
+            )
+
+        return super().validate(attrs)
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):

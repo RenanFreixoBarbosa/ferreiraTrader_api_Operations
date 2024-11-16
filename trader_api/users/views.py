@@ -53,3 +53,18 @@ class SuportLogin(APIView):
             "access_token": str(access_token),
             "refresh_token": str(refresh),
         }, status=status.HTTP_200_OK)
+    
+class InactivateUserView(APIView):
+    permission_classes = [IsAdminOrEditorPermission]
+    def patch(self, request, pk):
+        user = UserService().inactive_user(pk)
+        return Response({'message':user,'data':[]})
+    
+    def delete(self, request, pk):
+        user = UserService().delete_user(pk)
+        return Response({'message':user,'data':[]})
+    
+class UpdateUserView(APIView):
+    def patch(self,request,pk):
+        user_updated = UserService().update_user(pk, request.data)
+        return Response(user_updated)

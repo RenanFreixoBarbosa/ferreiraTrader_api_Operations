@@ -31,6 +31,36 @@ class UserService():
             return {"error": f"Grupo '{user.type}' não encontrado."}
         
     def get_users(self):
-        users = User.objects.all()
+        users = User.objects.filter(is_active=True)
         serialized_users = UserSerializer(users, many=True)
         return serialized_users.data
+    
+    def inactive_user(self,user_id):
+        user = User.objects.get(pk=user_id)
+        if not user.is_active:
+            return "Usuário já está inativo."
+        
+        user.is_active = False
+        user.save()
+        return "Usuário inativado com sucesso."
+    
+    def delete_user(self,user_id):
+        try:
+            user = User.objects.get(pk=user_id)
+            user.delete()
+            return "usuario deletado com sucesso"
+        except User.DoesNotExist:
+            return "Usuário não encontrado"
+    
+    def update_user(self,user_id,data):
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return {'message':"Usuário não encontrado.",'data':[]}
+
+        serializer = UserSerializer(user, data=data, partial=True)  # Atualização parcial
+        if serializer.is_valid():
+            serializer.save()
+            return {'message':'Usuario atualizado com sucesso','data':serializer.data}
+        else:
+            return {'message': serializer.errors, 'data': []}
