@@ -31,7 +31,7 @@ class UserService():
             return {"error": f"Grupo '{user.type}' não encontrado."}
         
     def get_users(self):
-        users = User.objects.filter(is_active=True)
+        users = User.objects.filter().order_by('first_name')
         serialized_users = UserSerializer(users, many=True)
         return serialized_users.data
     
