@@ -1,5 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.timezone import now, timedelta
+
+def default_expiration():
+    return now() + timedelta(days=10)
 
 class User(AbstractUser):
     USER_TYPES = (
@@ -8,6 +12,9 @@ class User(AbstractUser):
         ('team','Team')
     )
     type = models.CharField(max_length=10, choices=USER_TYPES, default='student')
+    created_at = models.DateTimeField(auto_now_add=True)  # Define a data automaticamente na criação
+    expires_at = models.DateTimeField(default= default_expiration)
+    id_guru = models.CharField(max_length=100)
     
     @classmethod
     def change_password(cls,user_id,new_password):

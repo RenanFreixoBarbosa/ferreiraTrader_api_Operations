@@ -35,15 +35,18 @@ class UserService():
         serialized_users = UserSerializer(users, many=True)
         return serialized_users.data
     
-    def inactive_user(self,user_id):
+    def set_status_user(self,user_id,status=True):
         user = User.objects.get(pk=user_id)
-        if not user.is_active:
+        if not user.is_active and not status:
             return "Usuário já está inativo."
-        
-        user.is_active = False
-        user.save()
-        return "Usuário inativado com sucesso."
-    
+        elif user.is_active and status:
+            return "Usuário já está ativado"
+        else:
+            user.is_active = False if not status else True
+            user.save()
+            message = "Usuário inativado com sucesso." if not status else "Usuário ativado com sucesso."
+            return message
+
     def delete_user(self,user_id):
         try:
             user = User.objects.get(pk=user_id)
