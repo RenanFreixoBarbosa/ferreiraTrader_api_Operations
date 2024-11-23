@@ -38,7 +38,7 @@ class DailyResultService(PostgresServices):
       daily_result_list = super().read(user=user.id,date__range=[kwargs['start_date'],kwargs['end_date']])
 
       total_operations=0
-      qtd_total_wins,qtd_total_draws,qtd_total_lost = 0,0,0
+      qtd_total_wins,qtd_total_lost = 0,0
       total_arrecadado=0
 
       daily_result_process=[]
@@ -60,7 +60,7 @@ class DailyResultService(PostgresServices):
         qtd_total_wins += int(operation_results.get('total_wins')) 
         qtd_total_lost += int(operation_results.get('total_lost')) 
         total_arrecadado += float(operation_results.get('total_arrecadado'))
-        percent_wins_period = operation_results.get('percent_arrecadado')
+        percent_wins_period = (qtd_total_wins*100)/total_operations
       
       return {
         "qtd_operations_period": total_operations,
