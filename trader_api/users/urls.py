@@ -11,4 +11,5 @@ urlpatterns=[
     path('user/<int:pk>/set-status/', views.SetStatusUserView.as_view(), name='inactivate_user'),
     path('user/<int:pk>/delete/', views.DeleteUserView.as_view(), name='delete_user'),
     path('users/<int:pk>/update/', views.UpdateUserView.as_view(), name='update_user'),
+    path('webhook/', views.WebhookHandlerView.as_view(), name='webhook_handler'),
 ]

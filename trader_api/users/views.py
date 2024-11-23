@@ -69,3 +69,14 @@ class UpdateUserView(APIView):
     def patch(self,request,pk):
         user_updated = UserService().update_user(pk, request.data)
         return Response(user_updated)
+
+class WebhookHandlerView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.data
+            response = UserService().manager_user(data)
+            return Response({"status": "success", "response": response}, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Retorna uma resposta de erro
+            return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

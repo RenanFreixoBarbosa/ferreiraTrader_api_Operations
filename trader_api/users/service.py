@@ -10,7 +10,7 @@ class UserService():
         if serializer.is_valid():
             user = serializer.save()
             self.insert_user_auth_group(user)
-            return {"id":user.id,"username":user.username,"type":user.type,"email":user.email,'name':user.first_name}
+            return {"id":user.id,"username":user.username,"type":user.type,"email":user.email,'name':user.first_name,'id_guru':user.id_guru}
         
         # Se o serializer não for válido, retorna os erros
         return {"error": serializer.errors}
@@ -67,3 +67,32 @@ class UserService():
             return {'message':'Usuario atualizado com sucesso','data':serializer.data}
         else:
             return {'message': serializer.errors, 'data': []}
+
+    def manager_user(self,json_request):
+        user_data = json_request.get("subscriber") 
+        id_guru = user_data.get("id")
+        try:
+            user_exist = User.objects.get(id_guru=id_guru)
+            function_map = {
+                "active": lambda: self.set_status_user(user_exist.id, True),
+                "canceled": lambda: self.set_status_user(user_exist.id, False),
+                "expired": lambda: self.set_status_user(user_exist.id, False),
+                "inactive": lambda: self.set_status_user(user_exist.id, False),
+            }
+
+            last_status = json_request.get("last_status").lower()
+            if last_status in function_map:
+                return function_map[last_status]()
+            else:
+                return "Tipo de Status não mapeado"
+
+        except User.DoesNotExist:
+            user_data = {"username":user_data.get("email"),
+                         "email":user_data.get("email"),
+                         "password":user_data.get("phone_number"),
+                         "id_guru":id_guru,
+                         "type":"student"}
+            
+            created = self.insert_user(user_data)
+            return created
+        

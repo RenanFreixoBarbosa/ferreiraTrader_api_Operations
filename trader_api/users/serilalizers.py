@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             type=validated_data.get('type', 'student'),
             email=validated_data['email'],
+            id_guru=validated_data['id_guru'],
             first_name=validated_data['username']
         )
         return user
