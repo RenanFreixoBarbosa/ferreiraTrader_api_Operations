@@ -1,11 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status  # Importa para utilizar códigos de status HTTP
-from rest_framework.request import Request  # Importa para o tipo do request
 from .service import UserService
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from core.permissions import IsAdminOrEditorPermission
+import os
 
 from .models import User
 
@@ -61,22 +61,35 @@ class SetStatusUserView(APIView):
         return Response({'message':user,'data':[]})
 
 class DeleteUserView(APIView):
+    permission_classes = [IsAdminOrEditorPermission]
     def delete(self, request, pk):
         user = UserService().delete_user(pk)
         return Response({'message':user,'data':[]})
     
 class UpdateUserView(APIView):
+    permission_classes = [IsAdminOrEditorPermission]
     def patch(self,request,pk):
         user_updated = UserService().update_user(pk, request.data)
         return Response(user_updated)
 
 class WebhookHandlerView(APIView):
+    authentication_classes = []
+    permission_classes = []
     def post(self, request, *args, **kwargs):
+        # Obtendo o token enviado no cabeçalho Authorization
+        token = request.headers.get('Authorization')
+        
+        # Obtendo a chave GURU_KEY armazenada no .env
+        guru_key = os.getenv("GURU_KEY")
+
+        # Verificando se a chave enviada no header é a mesma que a chave armazenada no .env
+        if token != f"Bearer {guru_key}":
+            return Response({"error": "Chave inválida! Você não está autorizado."}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
             data = request.data
             response = UserService().manager_user(data)
             return Response({"status": "success", "response": response}, status=status.HTTP_200_OK)
         except Exception as e:
-            # Retorna uma resposta de erro
+            print(f"Erro: {str(e)}")  # Print do erro caso ocorra
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-

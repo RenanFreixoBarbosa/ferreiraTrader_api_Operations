@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status 
 from users.models import User 
 from .models import Token_Pass
+import os
 from .genericPasswordToken import GenericPasswordToken
 # Create your views here.
 
@@ -19,12 +20,12 @@ class RequestResetPassword(APIView):
          
         # Gera o token de recuperação de senha
         token = GenericPasswordToken.generate_password_reset_token(user)
-
+        print(os.getenv('EMAIL'))
         # Envia o e-mail com o link para recuperação
         send_mail(
                 'Recuperação de Senha',
                 f'Cole o token no aplicativo para resetar sua senha: {token}',
-                'renanbarbosa012@gmail.com',
+                os.getenv('EMAIL'),
                 [user.email],
                 fail_silently=False,
                 )

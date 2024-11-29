@@ -10,23 +10,24 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: trader_db
     volumes:
-      - ./postgresql_data:/var/lib/postgresql/data  # Pasta local dentro do projeto
+      - ./postgresql_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"  # Porta padrão do PostgreSQL
+      - "5432:5432"
     networks:
       - trader_network
 
   api:
     build:
       context: ./trader_api
+      dockerfile: Dockerfile  # Define explicit Dockerfile, se necessário
       args:
-        USER_ID: 1001  # Define o UID fixo
-        GROUP_ID: 1001  # Define o GID fixo
+        USER_ID: 1001
+        GROUP_ID: 1001
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./trader_api:/usr/local/trader/api
     ports:
-      - "8000:8000"  # Ajuste aqui para mapear a porta 8000
+      - "8000:8000"
     environment:
       - DJANGO_DB_HOST=db
       - DJANGO_DB_NAME=trader_db
@@ -34,6 +35,8 @@ services:
       - DJANGO_DB_PASSWORD=admin
     networks:
       - trader_network
+    env_file:
+      - ./trader_api/.env
 
 volumes:
   postgres_data:

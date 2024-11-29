@@ -70,9 +70,13 @@ class UserService():
 
     def manager_user(self,json_request):
         user_data = json_request.get("subscriber") 
-        id_guru = user_data.get("id")
+        id_guru = user_data.get("id") 
         try:
             user_exist = User.objects.get(id_guru=id_guru)
+            if user_exist.email != user_data['email']:
+                user_exist.email = user_data['email']
+                user_exist.username=user_data['email']
+                user_exist.save()
             function_map = {
                 "active": lambda: self.set_status_user(user_exist.id, True),
                 "canceled": lambda: self.set_status_user(user_exist.id, False),
