@@ -91,12 +91,13 @@ class UserService():
                 return "Tipo de Status não mapeado"
 
         except User.DoesNotExist:
-            user_data = {"username":user_data.get("email"),
+            username = user_data.get("name").split(" ")
+            new_user_data = {"username":username[0],
                          "email":user_data.get("email"),
                          "password":user_data.get("phone_number"),
                          "id_guru":id_guru,
                          "type":"student"}
             
-            created = self.insert_user(user_data)
+            created = self.insert_user(new_user_data)
             return created
         
