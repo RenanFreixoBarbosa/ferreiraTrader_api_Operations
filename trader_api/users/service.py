@@ -35,6 +35,19 @@ class UserService():
         serialized_users = UserSerializer(users, many=True)
         return serialized_users.data
     
+    def get_users_students(self):
+        users = User.objects.filter(type = "student").order_by('first_name')
+        serialized_users = UserSerializer(users, many=True)
+        return serialized_users.data
+    
+    def get_type_user_email(self,email):
+        # Filtra o usuário pelo e-mail
+        user = User.objects.get(username=email)
+        return user.type
+        
+        
+    
+
     def set_status_user(self,user_id,status=True):
         user = User.objects.get(pk=user_id)
         if not user.is_active and not status:

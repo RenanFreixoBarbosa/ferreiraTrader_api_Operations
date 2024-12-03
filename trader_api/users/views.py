@@ -20,7 +20,15 @@ class GetUserView(APIView):
     permission_classes = [IsAdminOrEditorPermission]
 
     def get(self,request):
-        users = UserService().get_users()
+        email = request.user
+        type_user = UserService().get_type_user_email(email)   
+        if(type_user == 'admin') :
+            users = UserService().get_users()
+        else :
+            users = UserService().get_users_students()
+        
+
+        
         return Response(users)
     
 class SuportLogin(APIView):
@@ -47,8 +55,8 @@ class SuportLogin(APIView):
         # Gera o Refresh Token (JWT)
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
-
-        # Retorna o JWT (access token)
+        
+        # Retorna o JWT (access token) e o tipo de usuario
         return Response({
             "access_token": str(access_token),
             "refresh_token": str(refresh),
