@@ -40,20 +40,6 @@ services:
     env_file:
       - ./trader_api/.env
 
-  # Serviço do Nginx
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf  # Arquivo de configuração do Nginx
-      - ./static:/app/static  # Pasta de arquivos estáticos
-      - ./media:/app/media  # Pasta de arquivos de mídia
-    ports:
-      - "80:80"  # Nginx escutando na porta 80
-    depends_on:
-      - api  # Depende do serviço "api" (Gunicorn)
-    networks:
-      - trader_network  # Nginx também conectado à rede "trader_network"
-
 volumes:
   postgres_data:
 
