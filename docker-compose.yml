@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Serviço de banco de dados
   db:
     image: postgres:13
     container_name: postgres_db
@@ -10,16 +11,17 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: trader_db
     volumes:
-      - ./postgresql_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
       - trader_network
 
+  # Serviço da API (Django)
   api:
     build:
       context: ./trader_api
-      dockerfile: Dockerfile  # Define explicit Dockerfile, se necessário
+      dockerfile: Dockerfile  # Define o Dockerfile explicitamente, se necessário
       args:
         USER_ID: 1001
         GROUP_ID: 1001
@@ -38,8 +40,23 @@ services:
     env_file:
       - ./trader_api/.env
 
+  # Serviço do Nginx
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Arquivo de configuração do Nginx
+      - ./static:/app/static  # Pasta de arquivos estáticos
+      - ./media:/app/media  # Pasta de arquivos de mídia
+    ports:
+      - "80:80"  # Nginx escutando na porta 80
+    depends_on:
+      - api  # Depende do serviço "api" (Gunicorn)
+    networks:
+      - trader_network  # Nginx também conectado à rede "trader_network"
+
 volumes:
   postgres_data:
 
 networks:
   trader_network:
+    driver: bridge
