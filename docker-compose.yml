@@ -46,7 +46,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Para acessar os containers Docker
       - ./traefik_data:/etc/traefik  # Persistência de configuração
       - ./acme.json:/acme.json       # Certificados SSL gerados automaticamente
-      - traefik_certificates:/letsencryp
+      - traefik_certificates:/letsencrypt
     deploy:
       mode: replicated
       replicas: 1
