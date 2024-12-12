@@ -1,56 +1,6 @@
 version: '3.8'
 
 services:
-  # Agente do Portainer
-  agent:
-    image: portainer/agent:latest
-    container_name: portainer_agent
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker/volumes:/var/lib/docker/volumes
-    networks:
-      - trader_network
-    deploy:
-      mode: global
-      placement:
-        constraints: [node.platform.os == linux]
-
-  # Serviço do Traefik (Proxy reverso)
-  traefik:
-    image: traefik:v2.11
-    container_name: traefik
-    command:
-      - --providers.docker=true
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --providers.docker.exposedbydefault=false
-      - --providers.docker.swarmMode=true
-      - --providers.docker.network=trader_network
-      - --providers.docker.endpoint=unix:///var/run/docker.sock
-      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
-      - --certificatesresolvers.le.acme.email=suporte@ferreiratrader.com.br
-      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.le.acme.tlschallenge=true
-      - --log.level=DEBUG
-      - --entrypoints.web.http.redirections.entryPoint.to=websecure
-      - --entrypoints.web.http.redirections.entryPoint.scheme=https
-    ports:
-      - "80:80"      # HTTP
-      - "443:443"    # HTTPS
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro  # Para acessar os containers Docker
-      - ./traefik_data:/etc/traefik  # Persistência de configuração
-      - ./acme.json:/acme.json       # Certificados SSL gerados automaticamente
-      - traefik_certificates:/letsencrypt
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-    networks:
-      - trader_network  
-
   # Serviço de banco de dados
   db:
     image: postgres:13
@@ -71,7 +21,7 @@ services:
   api:
     build:
       context: ./trader_api
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  # Define o Dockerfile explicitamente, se necessário
       args:
         USER_ID: 1001
         GROUP_ID: 1001
@@ -89,35 +39,9 @@ services:
       - trader_network
     env_file:
       - ./trader_api/.env
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`alfa-app.ferreiratrader.com.br`)"
-      - "traefik.http.services.api.loadbalancer.server.port=8000"
-      - "traefik.http.routers.api.entrypoints=websecure"
-      - "traefik.http.routers.api.tls.certresolver=le"
-
-  # Serviço do Portainer
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    command: -H tcp://tasks.agent:9001 --tlsskipverify
-    ports:
-      - "9000:9000"
-    networks:
-      - trader_network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`server.ferreiratrader.com.br`)"
-      - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.tls=true"
-      - "traefik.http.routers.portainer.tls.certresolver=le"
-      - "traefik.http.routers.portainer.service=portainer"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
 volumes:
   postgres_data:
-  traefik_certificates:
-    driver: local
 
 networks:
   trader_network:
