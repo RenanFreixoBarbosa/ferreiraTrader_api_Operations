@@ -120,7 +120,9 @@ services:
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 volumes:
   postgres_data:
-
+  
+  traefik_certificates:
+    driver: local
 networks:
   trader_network:
     driver: bridge
