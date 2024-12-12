@@ -15,25 +15,6 @@ services:
       placement:
         constraints: [node.platform.os == linux]
 
-  # Serviço do Portainer
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    command: -H tcp://tasks.agent:9001 --tlsskipverify
-    ports:
-      - "9000:9000"
-    networks:
-      - trader_network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`server.ferreiratrader.com.br`)"
-      - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.tls=true"
-      - "traefik.http.routers.portainer.tls.certresolver=le"
-      - "traefik.http.routers.portainer.service=portainer"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-
-
   # Serviço do Traefik (Proxy reverso)
   traefik:
     image: traefik:v2.10
@@ -95,7 +76,30 @@ services:
       - trader_network
     env_file:
       - ./trader_api/.env
-
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.api.rule=Host(`alfa-app.ferreiratrader.com.br`)"  # Substitua pelo domínio da API
+        - "traefik.http.services.api.loadbalancer.server.port=8000"  # Porta onde a aplicação escuta
+        - "traefik.http.routers.api.entrypoints=websecure"
+        - "traefik.http.routers.api.tls.certresolver=myresolver"
+        # Serviço do Portainer
+  
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    ports:
+      - "9000:9000"
+    networks:
+      - trader_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`server.ferreiratrader.com.br`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.routers.portainer.tls.certresolver=le"
+      - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 volumes:
   postgres_data:
 
