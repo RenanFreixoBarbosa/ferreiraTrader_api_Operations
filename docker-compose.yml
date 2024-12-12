@@ -17,7 +17,27 @@ services:
 
   # Serviço do Traefik (Proxy reverso)
   traefik:
-    image: traefik:v2.10
+    image: traefik:v2.11
+    command:
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.swarmMode=true
+      #defina a mesma rede que você criou para o traefik
+      - --providers.docker.network=trader_network
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      # Config para SSL Lets Encrypt
+      # altere para seu e-mail
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.le.acme.email=suporte@ferreiratrader.com.br
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      # Global HTTP -> HTTPS
+      #- --entrypoints.web.http.redirections.entryPoint.to=websecure
+      #- --entrypoints.web.http.redirections.entryPoint.scheme=https
+      #- --api
+      - --log.level=DEBUG
     container_name: traefik
     ports:
       - "80:80"      # HTTP
@@ -26,17 +46,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Para acessar os containers Docker
       - ./traefik_data:/etc/traefik  # Persistência de configuração
       - ./acme.json:/acme.json       # Certificados SSL gerados automaticamente
-    environment:
-      - TRAEFIK_PROVIDERS_DOCKER=true  # Ativa o provedor Docker
-      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false  # Apenas serviços com labels explícitas
-      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
-      - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"  # Substitua pelo domínio do dashboard
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - trader_network  
 
   # Serviço de banco de dados
   db:
