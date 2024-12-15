@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ['localhost',"alfa-app.ferreiratrader.com.br","178.156.133.187"]
 
 CORS_ALLOWED_ORIGINS = [
         "https://alfa-app.ferreiratrader.com.br",
-        "178.156.133.187",
 ]
 
 # Application definition
