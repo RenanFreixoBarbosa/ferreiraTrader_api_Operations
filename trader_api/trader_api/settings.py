@@ -27,8 +27,12 @@ SECRET_KEY = 'django-insecure-+y6b!$^_hk78p=ti4u9#z$p67f#3zml^im5#c!s!b12^zb&b4u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost',"https://alfa-app.ferreiratrader.com.br"]
 
+CORS_ALLOWED_ORIGINS = [
+        "http://localhost:60173",  # Substitua pela URL do seu frontend
+        "https://alfa-app.ferreiratrader.com.br",
+]
 
 # Application definition
 
@@ -41,6 +45,7 @@ OTHERS_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
+    'corsheaders'
 ]
 
 MY_APPS=[
@@ -55,6 +60,7 @@ INSTALLED_APPS= OTHERS_APPS + MY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
