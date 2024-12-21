@@ -85,13 +85,11 @@ class WebhookHandlerView(APIView):
     permission_classes = []
     def post(self, request, *args, **kwargs):
         # Obtendo o token enviado no cabeçalho Authorization
-        token = request.headers.get('Authorization')
-        
+        token = request.data.get('api_token')
         # Obtendo a chave GURU_KEY armazenada no .env
         guru_key = os.getenv("GURU_KEY")
-
         # Verificando se a chave enviada no header é a mesma que a chave armazenada no .env
-        if token != f"Bearer {guru_key}":
+        if token != guru_key:
             return Response({"error": "Chave inválida! Você não está autorizado."}, status=status.HTTP_401_UNAUTHORIZED)
 
         try:

@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-+y6b!$^_hk78p=ti4u9#z$p67f#3zml^im5#c!s!b12^zb&b4u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',"alfa-app.ferreiratrader.com.br","178.156.133.187"]
+ALLOWED_HOSTS = ['localhost',"alfa-app.ferreiratrader.com.br","178.156.133.187","2c87d54e7084","b466317876cc"]
 
 CORS_ALLOWED_ORIGINS = [
         "https://alfa-app.ferreiratrader.com.br",
