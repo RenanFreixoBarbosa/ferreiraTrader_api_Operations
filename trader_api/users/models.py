@@ -15,6 +15,7 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)  # Define a data automaticamente na criação
     expires_at = models.DateTimeField(default= default_expiration)
     id_guru = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=150,blank=True)
     
     @classmethod
     def change_password(cls,user_id,new_password):

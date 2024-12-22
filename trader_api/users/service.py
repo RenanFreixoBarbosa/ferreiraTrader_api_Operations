@@ -6,9 +6,6 @@ from .serilalizers import UserSerializer
 class UserService():
     
     def insert_user(self,user_data):
-        username_data= user_data.get("username").split(" ")
-        user_data['username']=username_data[0]
-        user_data['last_name']=username_data[1]
         serializer = UserSerializer(data=user_data)
         if serializer.is_valid():
             user = serializer.save()
@@ -37,9 +34,7 @@ class UserService():
         users = User.objects.filter().order_by('first_name')
         serialized_users = UserSerializer(users, many=True)
         for elem in serialized_users.data:
-            if elem['last_name'] != "":
-                elem['full_name'] = f"{elem['first_name']} {elem['last_name']}"
-            else:
+            if elem['full_name'] == "":
                 elem['full_name'] = elem['first_name']
         return serialized_users.data
     
@@ -118,7 +113,7 @@ class UserService():
                          "email":user_data.get("email"),
                          "password":user_data.get("phone_number"),
                          "id_guru":id_guru,
-                         "last_name":username[1],
+                         "full_name":user_data.get("name"),
                          "type":"student"}
             
             created = self.insert_user(new_user_data)

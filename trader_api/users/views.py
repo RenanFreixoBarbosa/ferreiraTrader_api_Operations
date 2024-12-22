@@ -22,7 +22,7 @@ class GetUserView(APIView):
     def get(self,request):
         email = request.user
         type_user = UserService().get_type_user_email(email)   
-        if(type_user == 'admin') :
+        if(type_user == 'admin' or type_user =='team') :
             users = UserService().get_users()
         else :
             users = UserService().get_users_students()

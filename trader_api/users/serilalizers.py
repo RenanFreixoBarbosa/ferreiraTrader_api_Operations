@@ -8,8 +8,8 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password','email', 'type','first_name','id_guru','is_active','created_at','last_name')
-        read_only = {'is_active','created_at'}
+        fields = ('id', 'username', 'password','email', 'type','first_name','id_guru','is_active','created_at','full_name')
+        read_only = {'is_active','created_at','full_name'}
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             id_guru=validated_data['id_guru'],
             first_name=validated_data['username'],
-            last_name=validated_data['last_name'] if 'last_name' in validated_data else ""
+            full_name=validated_data['full_name'] if 'full_name' in validated_data else ""
         )
         return user
 
