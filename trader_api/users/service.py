@@ -6,6 +6,9 @@ from .serilalizers import UserSerializer
 class UserService():
     
     def insert_user(self,user_data):
+        username = user_data.get("username").split(" ")
+        user_data['username'] = username[0]
+        user_data['full_name'] = user_data.get('username')
         serializer = UserSerializer(data=user_data)
         if serializer.is_valid():
             user = serializer.save()
