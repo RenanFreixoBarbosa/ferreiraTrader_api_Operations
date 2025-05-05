@@ -51,8 +51,10 @@ class UserService():
         user = User.objects.get(username=email)
         return user.type
         
-        
-    
+    def get_user_by_email(self,email):
+        # Filtra o usuário pelo e-mail
+        user = User.objects.get(username=email)
+        return user
 
     def set_status_user(self,user_id,status=True):
         user = User.objects.get(pk=user_id)

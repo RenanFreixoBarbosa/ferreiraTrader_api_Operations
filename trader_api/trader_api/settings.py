@@ -52,6 +52,7 @@ MY_APPS=[
     'operations',
     'daily_result',
     'token_pass',
+    'subscriptions',
 ]
 
 INSTALLED_APPS= OTHERS_APPS + MY_APPS

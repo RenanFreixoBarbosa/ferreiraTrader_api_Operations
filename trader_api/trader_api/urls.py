@@ -22,4 +22,5 @@ urlpatterns = [
     path('api/', include('operations.urls')),
     path('api/', include('daily_result.urls')),
     path('api/', include('token_pass.urls')),
+    path('api/', include('subscriptions.urls')),
 ]
